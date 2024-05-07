@@ -22,9 +22,14 @@ This is a simple clone of Google Keep built using HTML, CSS, and JavaScript. It 
 
 ```bash
 git clone https://github.com/your-username/google-keep-clone.git
+```
+
 2. Open the project directory:
-bash
-cd google-keep-clone
+
+```bash
+   cd google-keep-clone
+```
+
 3. Open index.html in your web browser.
 4. Start using the Google Keep clone.
 
@@ -42,6 +47,7 @@ Contributions are welcome! If you'd like to add features or fix bugs:
 License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
+```css
 Remember to replace `your-username` with your actual GitHub username. Also, make sure you have a `screenshots` directory with a screenshot of your project to include in the README file.
 
 ```

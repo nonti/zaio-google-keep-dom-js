@@ -33,21 +33,40 @@ class App {
     handleFormClick(event) {
         const isActiveFormClickedOn = this.$activeForm.contains(event.target);
         const isInActiveFormClickedOn = this.$inactiveForm.contains(event.target);
-        
+        const title = this.$noteTitle.value;
+        const text =  this.$noteText.value;
+
+        console.log((cuid()));
+
         if (isInActiveFormClickedOn) {
             this.openActiveForm();
+        } else if (!isInActiveFormClickedOn && !isActiveFormClickedOn) {
+            this.addNote(title, text);
+            this.closeActiveForm();
         }
     }
 
-    openActiveForm() {
-    this.$inactiveForm.style.display = "none";
-            this.$activeForm.style.display = "block";
-            this.$noteText.focus();
+    closeActiveForm() {
+        this.$inactiveForm.style.display = "block";
+        this.$activeForm.style.display = "none";
+        this.$noteText.value = "";
+        this.$noteTitle.value = "";
     }
     
-    addNote(id, { title, text }) {
-        const newNote = new Note(id, title, text);
-        this.notes = [...this.notes, newNote];
+
+    openActiveForm() {
+        this.$inactiveForm.style.display = "none";
+        this.$activeForm.style.display = "block";
+        this.$noteText.focus();
+    }
+    
+    addNote({ title, text }) {
+        if (!text == "") {
+            const newNote = new Note(cuid(), title, text);
+            this.notes = [...this.notes, newNote];
+            this.displayNotes();
+        }
+
     }
 
     editNote(id, { title, text }) {

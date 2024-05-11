@@ -208,8 +208,9 @@ input:focus {
 
 /* ALL NOTES  */
 .notes {
-display: flex;
-justify-content: center;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .note {
@@ -219,6 +220,11 @@ justify-content: center;
   border: 1px solid #e0e1e0;
   border-radius: 8px;
   position: relative;
+  cursor: pointer;
+}
+
+.note:hover{
+  box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302), 0 2px 6px 2px rgba(60,64,67,0.149);
 }
 
 .note .title {
@@ -236,6 +242,7 @@ justify-content: center;
   display: flex;
   padding: 0;
   justify-content: center;
+  visibility: hidden;
 }
 
 .note-footer .material-symbols-outlined {
@@ -247,6 +254,7 @@ justify-content: center;
   position: absolute;
   top: -20px;
   left: -20px;
+  visibility: hidden;
 }
 
 /* MODAL CONTENT  */

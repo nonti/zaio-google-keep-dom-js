@@ -8,7 +8,8 @@ class Note {
 }
 class App {
    constructor() {
-      this.notes = [new Note(1, "test title", "test text")];
+      this.notes = [new Note("abc1", "test title", "test text")];
+      this.selectedNoteId = "";
 
       this.$activeForm = document.querySelector(".active-form");
       this.$inactiveForm = document.querySelector(".inactive-form");
@@ -16,6 +17,10 @@ class App {
       this.$noteText = document.querySelector("#note-text");
       this.$notes = document.querySelector(".notes");
       this.$form = document.querySelector("#form");
+      this.$modal = document.querySelector(".modal");
+      this.$modalForm = document.querySelector("#modal-form");
+      this.$modalTitle = document.querySelector("#modal-title");
+      this.$modalText = document.querySelector("#modal-text");
 
       this.addEventListeners();
       this.displayNotes();
@@ -23,7 +28,9 @@ class App {
 
    addEventListeners(){
       document.body.addEventListener("click", (event) => {
-      this.handleFormClick(event);
+         this.handleFormClick(event);
+         this.closeModal(event);
+         this.openModal(event);
       });
 
       this.$form.addEventListener("submit", (event) => {
@@ -32,19 +39,19 @@ class App {
          const text = this.$noteText.value;
          this.addNote({ title, text });
          this.closeActiveForm();
-      })
+      });
    }
 
    handleFormClick(event) {
       const isActiveFormClickedOn = this.$activeForm.contains(event.target);
       const isInActiveFormClickedOn = this.$inactiveForm.contains(event.target);
       const title = this.$noteTitle.value;
-      const text =  this.$noteText.value;
+      const text = this.$noteText.value;
 			
       if (isInActiveFormClickedOn) {
          this.openActiveForm();
       } else if (!isInActiveFormClickedOn && !isActiveFormClickedOn) {
-			this.addNote({ title, text });
+         this.addNote({ title, text });
          this.closeActiveForm();
       }
    }
@@ -60,6 +67,27 @@ class App {
       this.$activeForm.style.display = "none";
       this.$noteText.value = "";
       this.$noteTitle.value = "";
+   }
+
+   openModal(event) {
+      const $selectedNote = event.target.closest(".note");
+      if ($selectedNote) {
+         this.selectedNoteId = $selectedNote.id; 
+         this.$modalTitle.value =$selectedNote.children[1].innerHTML;
+         this.$modalText.value = $selectedNote.children[2].innerHTML;
+         this.$modal.classList.add("open-modal");
+      }
+   }
+
+   closeModal(event) {
+      const isModalFormClickedOn = this.$modalForm.contains(event.target);
+      if (!isModalFormClickedOn && this.$modal.classList.contains("open-modal")) {
+         this.editNote(this.selectedNoteId, {
+               title: this.$modalTitle.value,
+               text: this.$modalText.value
+            });
+         this.$modal.classList.remove("open-modal");
+      }
    }
 
    addNote({ title, text }) {
@@ -78,12 +106,31 @@ class App {
          }
          return note;
       });
+      this.displayNotes();
    }
 
+   handleMouseOverNote(element) {
+      const $note = document.querySelector("#" + element.id);
+      const $checkNote = $note.querySelector(".check-circle");
+      const $noteFooter = $note.querySelector(".note-footer");
+      $checkNote.style.visibility = "visible";
+      $noteFooter.style.visibility = "visible";
+   }
+
+   handleMouseOutNote(element) {
+      const $note = document.querySelector("#" + element.id);
+      const $checkNote = $note.querySelector(".check-circle");
+      const $noteFooter = $note.querySelector(".note-footer");
+      $checkNote.style.visibility = "hidden";
+      $noteFooter.style.visibility = "hidden";
+   }
+
+   
+   // 
    displayNotes() {
       this.$notes.innerHTML = this.notes.map((note) =>
          `
-         <div class="note" id="${note.id}">
+         <div class="note" id="${note.id}" onmouseover="app.handleMouseOverNote(this)" onmouseout="app.handleMouseOutNote(this)">
          	<span class="material-symbols-outlined check-circle">check_circle</span>
           		<div class="title">${note.title}</div>
           		<div class="text">${note.text}</div>

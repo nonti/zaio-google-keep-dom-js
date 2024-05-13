@@ -21,6 +21,7 @@ class App {
       this.$modalForm = document.querySelector("#modal-form");
       this.$modalTitle = document.querySelector("#modal-title");
       this.$modalText = document.querySelector("#modal-text");
+      this.$closeModalForm = document.querySelector("#modal-btn");
 
       this.addEventListeners();
       this.displayNotes();
@@ -31,6 +32,7 @@ class App {
          this.handleFormClick(event);
          this.closeModal(event);
          this.openModal(event);
+         this.handleArchiving(event);
       });
 
       this.$form.addEventListener("submit", (event) => {
@@ -39,6 +41,11 @@ class App {
          const text = this.$noteText.value;
          this.addNote({ title, text });
          this.closeActiveForm();
+      });
+
+        this.$modalForm.addEventListener("submit", (event) => {
+           event.preventDefault();
+           console.log("test");
       });
    }
 
@@ -71,23 +78,33 @@ class App {
 
    openModal(event) {
       const $selectedNote = event.target.closest(".note");
-      if ($selectedNote) {
+      if ($selectedNote && !event.target.closest(".archive")) {
          this.selectedNoteId = $selectedNote.id; 
          this.$modalTitle.value =$selectedNote.children[1].innerHTML;
          this.$modalText.value = $selectedNote.children[2].innerHTML;
          this.$modal.classList.add("open-modal");
+      } else {
+         return;
       }
    }
 
    closeModal(event) {
       const isModalFormClickedOn = this.$modalForm.contains(event.target);
-      if (!isModalFormClickedOn && this.$modal.classList.contains("open-modal")) {
+      const isCloseModalBtnClickedOn = this.$closeModalForm.contains(event.target);
+      if ((!isModalFormClickedOn || isCloseModalBtnClickedOn) && this.$modal.classList.contains("open-modal")) {
          this.editNote(this.selectedNoteId, {
                title: this.$modalTitle.value,
-               text: this.$modalText.value
-            });
+               text: this.$modalText.value});
          this.$modal.classList.remove("open-modal");
       }
+   }
+
+   handleArchiving(event) {
+      const $selectedNote = event.target.closest(".note");
+      if ($selectedNote) {
+         this.selectedNoteId = $selectedNote.id;
+         this.deleteNote(this.selectedNoteId);
+      } 
    }
 
    addNote({ title, text }) {
@@ -167,6 +184,7 @@ class App {
 
    deleteNote(id) {
       this.notes = this.notes.filter(note => note.id != id);
+      this.displayNotes();
    }
 
 }

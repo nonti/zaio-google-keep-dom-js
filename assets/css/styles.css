@@ -88,6 +88,10 @@ input:focus {
   margin-left: 10px;
 }
 
+.material-symbols-outlined img{
+    border-radius: 50%;
+}
+
 /* MAIN SECTION STYLES */
 
 /* SIDEBAR  */

@@ -8,7 +8,10 @@ class Note {
 }
 class App {
    constructor() {
-      this.notes = [new Note("abc1", "test title", "test text")];
+      // localStorage.setItem('test', JSON.stringify(['124']));
+      // console.log(JSON.parse(localStorage.getItem('test')));
+      this.notes = JSON.parse(localStorage.getItem("notes")) || [];
+      console.log(this.notes);
       this.selectedNoteId = "";
       this.miniSidebar = true;
 
@@ -112,7 +115,7 @@ class App {
 
    handleArchiving(event) {
       const $selectedNote = event.target.closest(".note");
-      if ($selectedNote && event.target.closest(".achived")) {
+      if ($selectedNote && event.target.closest(".archive")) {
          this.selectedNoteId = $selectedNote.id;
          this.deleteNote(this.selectedNoteId);
       } else {
@@ -124,7 +127,7 @@ class App {
       if (text != "") {
          const newNote = new Note(cuid(), title, text);
          this.notes = [...this.notes, newNote];
-         this.displayNotes();
+         this.render();
       }
    }
 
@@ -136,7 +139,12 @@ class App {
          }
          return note;
       });
-      this.displayNotes();
+      this.render();
+   }
+
+   deleteNote(id) {
+      this.notes = this.notes.filter(note => note.id != id);
+      this.render();
    }
 
    handleMouseOverNote(element) {
@@ -169,9 +177,15 @@ class App {
       }
    }
 
+   saveNotes() {
+      localStorage.setItem('notes', JSON.stringify(this.notes));
+   }
 
-   
-   // 
+   render() {
+      this.saveNotes();
+      this.displayNotes();
+   }
+
    displayNotes() {
       this.$notes.innerHTML = this.notes.map((note) =>
          `
@@ -196,7 +210,7 @@ class App {
               		<span class="material-symbols-outlined hover small-icon">image</span>
               		<span class="tooltip-text">Add Image</span>
             	</div>
-            	<div class="tooltip">
+            	<div class="tooltip archive">
               		<span class="material-symbols-outlined hover small-icon">archive</span>
               		<span class="tooltip-text">Archive</span>
             	</div>
@@ -209,12 +223,6 @@ class App {
          `
       ).join("");
    }
-
-   deleteNote(id) {
-      this.notes = this.notes.filter(note => note.id != id);
-      this.displayNotes();
-   }
-
 }
 
 const app = new App();
